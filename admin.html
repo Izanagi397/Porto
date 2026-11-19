@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXA Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
+  <style>
+    /* ============================================================
+       NEXA ADMIN PANEL — Inline CSS (satu file, mudah dipindah)
+       ============================================================ */
+    :root {
+      --bg:        #F5F5F0;
+      --bg-alt:    #EAECE7;
+      --text:      #252A28;
+      --muted:     #777F79;
+      --accent:    #8C9A8E;
+      --border:    #C7CEC5;
+      --white:     #FFFFFF;
+      --danger:    #c0392b;
+      --success:   #27ae60;
+      --radius:    10px;
+      --shadow:    0 4px 20px rgba(37,42,40,0.09);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-alt);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ---- LOGIN SCREEN ---- */
+    .login-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .login-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .login-box .brand {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .login-box .subtitle {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s;
+      margin-bottom: 1rem;
+      background: var(--bg);
+    }
+    .login-box input:focus { border-color: var(--accent); }
+
+    .login-btn {
+      width: 100%;
+      padding: 11px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .login-btn:hover { background: var(--accent); }
+
+    .login-error {
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 0.75rem;
+      display: none;
+    }
+
+    /* ---- ADMIN LAYOUT ---- */
+    .admin-layout {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: 240px;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 100;
+    }
+
+    .sidebar__logo {
+      padding: 1.5rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar__logo .brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .sidebar__logo .sub {
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .sidebar__nav {
+      flex: 1;
+      padding: 1rem 0.75rem;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      padding: 0.5rem 0.5rem 0.25rem;
+      margin-top: 0.75rem;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar-link:hover { background: var(--bg-alt); color: var(--text); }
+    .sidebar-link.active { background: var(--accent); color: var(--white); }
+    .sidebar-link i { font-size: 1rem; }
+
+    .sidebar__footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .sidebar__footer a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .sidebar__footer a:hover { color: var(--text); }
+
+    /* Main Content */
+    .admin-main {
+      margin-left: 240px;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+
+    /* Tab Panels */
+    .tab-panel {
+      display: none;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* ---- PAGE HEADER ---- */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.75rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .page-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+
+    .page-header p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* Save Button */
+    .save-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .save-btn:hover { background: var(--accent); transform: translateY(-1px); }
+    .save-btn.saved { background: var(--success); }
+
+    /* ---- CARD ---- */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .card__title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text);
+    }
+    .card__title i { color: var(--accent); }
+
+    /* ---- FORM ELEMENTS ---- */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 6px;
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      background: var(--bg);
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    .form-input:focus, .form-textarea:focus {
+      border-color: var(--accent);
+      background: var(--white);
+    }
+
+    .form-textarea { min-height: 90px; line-height: 1.6; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ---- PHOTO UPLOAD ---- */
+    .photo-upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--bg);
+    }
+    .photo-upload-area:hover, .photo-upload-area.drag-over {
+      border-color: var(--accent);
+      background: rgba(140,154,142,0.05);
+    }
+
+    .photo-upload-area i {
+      font-size: 2.5rem;
+      color: var(--border);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .photo-upload-area p {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .photo-upload-area strong {
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    .photo-upload-area input[type="file"] { display: none; }
+
+    /* Preview strip */
+    .photo-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
+    .photo-preview-item {
+      position: relative;
+      width: 90px;
+      height: 90px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+
+    .photo-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-preview-item .remove-photo {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      background: rgba(37,42,40,0.7);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    .photo-preview-item .photo-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(37,42,40,0.7);
+      color: white;
+      font-size: 0.6rem;
+      text-align: center;
+      padding: 2px;
+    }
+
+    /* ---- SKILL ITEM in Admin ---- */
+    .skill-admin-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skill-admin-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    .skill-admin-row .skill-name {
+      flex: 1;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .skill-level-select {
+      padding: 5px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      background: var(--white);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .skill-delete-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .skill-delete-btn:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+    .add-item-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border: 1.5px dashed var(--border);
+      border-radius: 8px;
+      background: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      cursor: pointer;
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
+      transition: all 0.2s;
+    }
+    .add-item-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ---- PROJECT ADMIN ---- */
+    .project-admin-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .project-admin-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .project-admin-card__title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .project-admin-card__actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .icon-btn {
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--white);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover { color: var(--text); border-color: var(--text); }
+    .icon-btn.danger:hover { background: var(--danger); color: white; border-color: var(--danger); }
+
+    .project-admin-thumb {
+      width: 100%;
+      height: 120px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 1px solid var(--border);
+      margin-bottom: 0.75rem;
+      background: var(--bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      overflow: hidden;
+    }
+
+    .project-admin-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ---- TIMELINE ADMIN ---- */
+    .timeline-admin-row {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .timeline-admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ---- TOAST NOTIFICATION ---- */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--text);
+      color: var(--bg);
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 8px 24px rgba(37,42,40,0.2);
+      transform: translateY(80px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 9999;
+    }
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--danger);  }
+
+    /* ---- STATUS BADGE ---- */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .status-badge.info { background: rgba(140,154,142,0.15); color: var(--accent); }
+
+    /* ---- PREVIEW BUTTON ---- */
+    .preview-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .preview-link:hover { color: var(--text); border-color: var(--text); }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .admin-main { margin-left: 0; padding: 1rem; }
+      .sidebar__nav { display: flex; flex-wrap: wrap; gap: 4px; padding: 0.75rem; }
+      .nav-section-label { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+
+    /* ---- UNSAVED INDICATOR ---- */
+    .unsaved-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #e67e22;
+      display: inline-block;
+      margin-left: 4px;
+      display: none;
+    }
+    .has-changes .unsaved-dot { display: inline-block; }
+
+    /* Collapsible card */
+    .card-toggle {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      background: none;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--text);
+      text-align: left;
+      padding: 0;
+    }
+    .card-toggle i.toggle-icon {
+      transition: transform 0.25s;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    .card.collapsed .card-body { display: none; }
+    .card.collapsed .toggle-icon { transform: rotate(-90deg); }
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     LOGIN SCREEN
+============================================================ -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="brand">NEXA</div>
+    <div class="subtitle">Admin Panel</div>
+
+    <input type="password" id="admin-password" placeholder="Masukkan password admin" autocomplete="current-password" />
+    <button class="login-btn" onclick="doLogin()">
+      <i class="ph ph-sign-in"></i> Masuk
+    </button>
+    <p class="login-error" id="login-error">Password salah. Coba lagi.</p>
+
+    <p style="margin-top:1.5rem; font-size:0.75rem; color: var(--muted);">
+      Password default: <code>nexa2024</code><br/>
+      Ganti di baris <code>ADMIN_PASS</code> dalam file ini.
+    </p>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     ADMIN LAYOUT (tersembunyi sampai login)
+============================================================ -->
+<div class="admin-layout" id="admin-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar__logo">
+      <div class="brand">NEXA</div>
+      <div class="sub">Admin Panel</div>
+    </div>
+
+    <nav class="sidebar__nav">
+      <div class="nav-section-label">Konten</div>
+      <button class="sidebar-link active" onclick="switchTab('tab-identity', this)">
+        <i class="ph ph-user-circle"></i> Identitas & Hero
+      </button>
+      <button class="sidebar-link" onclick="switchTab('tab-about', this)">
+        <i class="ph ph-info"></i> About Me
+      </button>
+      <button class="sidebar-link" onclick="switchTab('tab-projects', this)">
+        <i class="ph ph-layout"></i> Projects
+      </button>
+      <button class="sidebar-link" onclick="switchTab('tab-skills', this)">
+        <i class="ph ph-wrench"></i> Skills &amp; Tools
+      </button>
+      <button class="sidebar-link" onclick="switchTab('tab-experience', this)">
+        <i class="ph ph-clock-clockwise"></i> Experience
+      </button>
+      <button class="sidebar-link" onclick="switchTab('tab-contact', this)">
+        <i class="ph ph-envelope"></i> Kontak
+      </button>
+
+      <div class="nav-section-label" style="margin-top:1rem;">Foto</div>
+      <button class="sidebar-link" onclick="switchTab('tab-photos', this)">
+        <i class="ph ph-images"></i> Kelola Foto
+      </button>
+    </nav>
+
+    <div class="sidebar__footer">
+      <a href="index.html" target="_blank">
+        <i class="ph ph-arrow-square-out"></i> Lihat Website
+      </a>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-main">
+
+    <!-- =========================================
+         TAB: IDENTITAS & HERO
+    ========================================= -->
+    <div class="tab-panel active" id="tab-identity">
+      <div class="page-header">
+        <div>
+          <h1>Identitas &amp; Hero</h1>
+          <p>Nama brand, tagline, dan deskripsi utama website</p>
+        </div>
+        <div style="display:flex; gap:10px; align-items:center;">
+          <a href="index.html" target="_blank" class="preview-link">
+            <i class="ph ph-eye"></i> Preview
+          </a>
+          <button class="save-btn" onclick="saveSection('identity')">
+            <i class="ph ph-floppy-disk"></i> Simpan
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-sparkle"></i> Brand</div>
+        <div class="form-group">
+          <label class="form-label">Nama Brand</label>
+          <input type="text" class="form-input" id="brand-name" value="NEXA" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tagline Utama (baris 1)</label>
+          <input type="text" class="form-input" id="hero-headline-1" value="Turning Ideas Into" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tagline Utama (baris 2 — italic/accent)</label>
+          <input type="text" class="form-input" id="hero-headline-2" value="Digital Experiences." />
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-text-align-left"></i> Hero Section</div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi Singkat</label>
+          <textarea class="form-textarea" id="hero-desc" rows="4">Mahasiswa yang antusias di bidang desain grafis dan teknologi digital. Berpengalaman menggunakan Adobe Creative Suite dan Microsoft Office, sambil terus belajar Web Development dan UI/UX Design — membangun karya yang fungsional sekaligus estetis.</textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Status / Jurusan</label>
+            <input type="text" class="form-input" id="hero-status" value="Mahasiswa Desain Komunikasi Visual / Informatika" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Lokasi</label>
+            <input type="text" class="form-input" id="hero-location" value="Indonesia" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- =========================================
+         TAB: ABOUT ME
+    ========================================= -->
+    <div class="tab-panel" id="tab-about">
+      <div class="page-header">
+        <div>
+          <h1>About Me</h1>
+          <p>Informasi diri, pendidikan, dan minat</p>
+        </div>
+        <button class="save-btn" onclick="saveSection('about')">
+          <i class="ph ph-floppy-disk"></i> Simpan
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-user"></i> Informasi Dasar</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nama Lengkap</label>
+            <input type="text" class="form-input" id="about-name" value="Bagas Adrian Saputra" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jurusan / Posisi</label>
+            <input type="text" class="form-input" id="about-title" value="Mahasiswa | Desainer Grafis" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sapaan (Heading About)</label>
+          <input type="text" class="form-input" id="about-greeting" value="Halo, saya Bagas 👋" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paragraf Perkenalan 1</label>
+          <textarea class="form-textarea" id="about-p1" rows="4">Saya Bagas Adrian Saputra, mahasiswa yang memiliki ketertarikan kuat di bidang desain grafis dan visual. Sejak lama saya aktif menggunakan Adobe Creative Suite — Photoshop, Illustrator, dan Premiere Pro — untuk menghasilkan karya visual yang komunikatif.</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Paragraf Perkenalan 2</label>
+          <textarea class="form-textarea" id="about-p2" rows="4">Saat ini saya juga sedang mempelajari dunia Web Development dan UI/UX Design menggunakan Figma. Saya percaya bahwa desain yang baik harus sekaligus cantik, fungsional, dan mudah dipahami oleh penggunanya.</textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-books"></i> Pendidikan</div>
+        <div id="edu-list">
+          <!-- Diisi oleh JS -->
+        </div>
+        <button class="add-item-btn" onclick="addEduItem()">
+          <i class="ph ph-plus"></i> Tambah Pendidikan
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-sparkle"></i> Minat &amp; Fokus (Tags)</div>
+        <div class="form-group">
+          <label class="form-label">Pisahkan dengan koma</label>
+          <input type="text" class="form-input" id="about-tags"
+            value="Adobe Creative Suite, Desain Grafis, Microsoft Office, Web Development, UI/UX Design" />
+        </div>
+      </div>
+    </div>
+
+
+    <!-- =========================================
+         TAB: PROJECTS
+    ========================================= -->
+    <div class="tab-panel" id="tab-projects">
+      <div class="page-header">
+        <div>
+          <h1>Projects</h1>
+          <p>Tambah, edit, atau hapus proyek</p>
+        </div>
+        <button class="save-btn" onclick="saveSection('projects')">
+          <i class="ph ph-floppy-disk"></i> Simpan
+        </button>
+      </div>
+
+      <div id="projects-admin-list">
+        <!-- Diisi oleh JS -->
+      </div>
+
+      <button class="add-item-btn" style="margin-top: 0.5rem;" onclick="addProject()">
+        <i class="ph ph-plus"></i> Tambah Project Baru
+      </button>
+    </div>
+
+
+    <!-- =========================================
+         TAB: SKILLS & TOOLS
+    ========================================= -->
+    <div class="tab-panel" id="tab-skills">
+      <div class="page-header">
+        <div>
+          <h1>Skills &amp; Tools</h1>
+          <p>Kelola daftar skill per kategori</p>
+        </div>
+        <button class="save-btn" onclick="saveSection('skills')">
+          <i class="ph ph-floppy-disk"></i> Simpan
+        </button>
+      </div>
+
+      <div id="skills-admin-list">
+        <!-- Diisi oleh JS -->
+      </div>
+
+      <button class="add-item-btn" onclick="addSkillGroup()">
+        <i class="ph ph-plus"></i> Tambah Kategori Skill
+      </button>
+    </div>
+
+
+    <!-- =========================================
+         TAB: EXPERIENCE
+    ========================================= -->
+    <div class="tab-panel" id="tab-experience">
+      <div class="page-header">
+        <div>
+          <h1>Experience &amp; Education</h1>
+          <p>Timeline pengalaman dan pendidikan</p>
+        </div>
+        <button class="save-btn" onclick="saveSection('experience')">
+          <i class="ph ph-floppy-disk"></i> Simpan
+        </button>
+      </div>
+
+      <div id="experience-admin-list">
+        <!-- Diisi oleh JS -->
+      </div>
+
+      <button class="add-item-btn" onclick="addExperience()">
+        <i class="ph ph-plus"></i> Tambah Pengalaman / Pendidikan
+      </button>
+    </div>
+
+
+    <!-- =========================================
+         TAB: KONTAK
+    ========================================= -->
+    <div class="tab-panel" id="tab-contact">
+      <div class="page-header">
+        <div>
+          <h1>Kontak</h1>
+          <p>Link kontak yang tampil di website</p>
+        </div>
+        <button class="save-btn" onclick="saveSection('contact')">
+          <i class="ph ph-floppy-disk"></i> Simpan
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-address-book"></i> Social Links</div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-input" id="contact-email" placeholder="email@example.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Instagram (URL lengkap)</label>
+          <input type="url" class="form-input" id="contact-instagram" placeholder="https://instagram.com/username" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">LinkedIn (URL lengkap)</label>
+          <input type="url" class="form-input" id="contact-linkedin" placeholder="https://linkedin.com/in/username" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">GitHub (URL lengkap)</label>
+          <input type="url" class="form-input" id="contact-github" placeholder="https://github.com/username" />
+        </div>
+      </div>
+    </div>
+
+
+    <!-- =========================================
+         TAB: FOTO
+    ========================================= -->
+    <div class="tab-panel" id="tab-photos">
+      <div class="page-header">
+        <div>
+          <h1>Kelola Foto</h1>
+          <p>Upload dan kelola foto profil &amp; gambar project</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-user-circle"></i> Foto Profil</div>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">
+          Foto ini akan muncul di Hero Section dan About Section.
+          Disarankan rasio 3:4 (portrait), minimal 600×800px.
+        </p>
+        <div class="photo-upload-area" id="profile-upload-area"
+          ondragover="handleDragOver(event,'profile-upload-area')"
+          ondragleave="handleDragLeave('profile-upload-area')"
+          ondrop="handleDrop(event,'profile-photo-input','profile-preview')">
+          <i class="ph ph-upload-simple"></i>
+          <p>Drag &amp; drop foto ke sini, atau <strong onclick="document.getElementById('profile-photo-input').click()">klik untuk pilih</strong></p>
+          <p style="font-size:0.75rem; margin-top:4px;">JPG, PNG, WEBP — Maks. 5MB</p>
+          <input type="file" id="profile-photo-input" accept="image/*"
+            onchange="previewPhoto(this,'profile-preview','assets/images/profile')" />
+        </div>
+        <div class="photo-preview" id="profile-preview"></div>
+        <p style="font-size:0.75rem; color:var(--muted); margin-top:0.75rem;">
+          <i class="ph ph-info"></i>
+          File akan disimpan sebagai <code>assets/images/profile.jpg</code>
+          — rename file Anda sesuai nama tersebut dan pindahkan ke folder.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card__title"><i class="ph ph-images"></i> Gambar Project</div>
+        <p style="font-size:0.85rem; color:var(--muted); margin-bottom:1rem;">
+          Upload gambar untuk tiap project. Disarankan rasio 16:9 atau 4:3.
+        </p>
+        <div class="photo-upload-area"
+          ondragover="handleDragOver(event,'project-upload-area')"
+          ondragleave="handleDragLeave('project-upload-area')"
+          ondrop="handleDrop(event,'project-photos-input','project-preview')"
+          id="project-upload-area">
+          <i class="ph ph-layout"></i>
+          <p>Drag &amp; drop beberapa gambar sekaligus, atau <strong onclick="document.getElementById('project-photos-input').click()">klik untuk pilih</strong></p>
+          <input type="file" id="project-photos-input" accept="image/*" multiple
+            onchange="previewMultiplePhotos(this,'project-preview')" />
+        </div>
+        <div class="photo-preview" id="project-preview"></div>
+        <div style="margin-top:1rem; font-size:0.8rem; color:var(--muted); background:var(--bg); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+          <strong style="color:var(--text);">Cara mengganti gambar project:</strong><br/>
+          1. Rename file Anda menjadi <code>project-1.jpg</code>, <code>project-2.jpg</code>, dst.<br/>
+          2. Pindahkan file ke folder <code>assets/images/</code><br/>
+          3. Nama file harus sama persis dengan yang ada di HTML
+        </div>
+      </div>
+
+      <!-- Panduan cepat -->
+      <div class="card">
+        <div class="card__title"><i class="ph ph-question"></i> Panduan Lokasi File</div>
+        <div style="font-size:0.85rem; display:flex; flex-direction:column; gap:8px;">
+          <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--bg); border-radius:8px; border:1px solid var(--border);">
+            <i class="ph ph-user" style="color:var(--accent);"></i>
+            <div>
+              <strong>Foto Profil</strong><br/>
+              <code style="font-size:0.75rem; color:var(--muted);">NEXA-PORTFOLIO/assets/images/profile.jpg</code>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px; padding:8px; background:var(--bg); border-radius:8px; border:1px solid var(--border);">
+            <i class="ph ph-layout" style="color:var(--accent);"></i>
+            <div>
+              <strong>Gambar Project</strong><br/>
+              <code style="font-size:0.75rem; color:var(--muted);">NEXA-PORTFOLIO/assets/images/project-1.jpg</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /admin-layout -->
+
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+  <i class="ph ph-check-circle"></i>
+  <span id="toast-msg">Disimpan!</span>
+</div>
+
+
+<script>
+/* ============================================================
+   NEXA ADMIN — script.js (inline)
+   ============================================================ */
+
+/* ---- PASSWORD (ganti nilai ini sesuai keinginan Anda) ---- */
+const ADMIN_PASS = "nexa2024";
+
+/* ---- DATA STORAGE KEY ---- */
+const STORE_KEY = "nexa_admin_data";
+
+/* ---- Default Data ---- */
+const DEFAULT_DATA = {
+  identity: {
+    brandName:      "NEXA",
+    headline1:      "Turning Ideas Into",
+    headline2:      "Digital Experiences.",
+    heroDesc:       "Mahasiswa yang antusias di bidang desain grafis dan teknologi digital. Berpengalaman menggunakan Adobe Creative Suite dan Microsoft Office, sambil terus belajar Web Development dan UI/UX Design.",
+    heroStatus:     "Mahasiswa Desain Komunikasi Visual / Informatika",
+    heroLocation:   "Indonesia",
+  },
+  about: {
+    name:       "Bagas Adrian Saputra",
+    title:      "Mahasiswa | Desainer Grafis",
+    greeting:   "Halo, saya Bagas 👋",
+    p1:         "Saya Bagas Adrian Saputra, mahasiswa yang memiliki ketertarikan kuat di bidang desain grafis dan visual. Sejak lama saya aktif menggunakan Adobe Creative Suite untuk menghasilkan karya visual yang komunikatif.",
+    p2:         "Saat ini saya juga sedang mempelajari dunia Web Development dan UI/UX Design menggunakan Figma.",
+    tags:       "Adobe Creative Suite, Desain Grafis, Microsoft Office, Web Development, UI/UX Design",
+    education:  [
+      { school: "Universitas [Nama]", major: "Teknik Informatika / DKV", year: "2022 – Sekarang" },
+      { school: "SMA [Nama]", major: "IPA / IPS", year: "2019 – 2022" },
+    ]
+  },
+  projects: [
+    { title: "Company Profile Website", category: "web", desc: "Website company profile responsif untuk bisnis lokal.", tech: "HTML, CSS, JavaScript", demo: "", github: "", thumb: "assets/images/project-1.jpg" },
+    { title: "Mobile App UI Design", category: "uiux", desc: "Desain antarmuka aplikasi mobile untuk manajemen tugas harian.", tech: "Figma, Prototyping", demo: "", github: "", thumb: "assets/images/project-2.jpg" },
+    { title: "Brand Identity Design", category: "graphic", desc: "Perancangan identitas visual untuk UMKM lokal.", tech: "Illustrator, Photoshop", demo: "", github: "", thumb: "assets/images/project-3.jpg" },
+  ],
+  skills: [
+    { category: "Adobe Creative Suite", level: "proficient", items: ["Adobe Photoshop", "Adobe Illustrator", "Adobe Premiere Pro", "Adobe InDesign", "Adobe Lightroom"] },
+    { category: "Microsoft Office", level: "proficient", items: ["Microsoft Word", "Microsoft Excel", "Microsoft PowerPoint"] },
+    { category: "Desain Visual", level: "proficient", items: ["Canva", "Typography & Layout", "Brand Identity Design", "Poster & Infografis"] },
+    { category: "UI/UX Design", level: "learning", items: ["Figma (dasar)", "Wireframing", "Prototyping dasar", "Prinsip UI/UX"] },
+    { category: "Web Development", level: "learning", items: ["HTML & CSS (dasar)", "JavaScript (dasar)", "Responsive Design"] },
+    { category: "Soft Skills", level: "", items: ["Kreativitas", "Kerja Tim & Kolaborasi", "Manajemen Waktu", "Komunikasi Visual"] },
+  ],
+  experience: [
+    { type: "org", year: "2023 – Sekarang", title: "Kepala Divisi Kreatif", place: "BEM Fakultas [Nama]", desc: "Memimpin tim kreatif dalam merancang konten media sosial dan materi publikasi." },
+    { type: "event", year: "2023", title: "Koordinator Desain — Tech Fest 2023", place: "[Nama Kampus]", desc: "Bertanggung jawab atas seluruh kebutuhan desain acara." },
+    { type: "work", year: "2022 – 2023", title: "Freelance Graphic Designer", place: "Independent / Project-based", desc: "Mengerjakan proyek desain grafis untuk klien UMKM dan individu." },
+    { type: "edu", year: "2022 – Sekarang", title: "S1 Teknik Informatika / DKV", place: "Universitas [Nama]", desc: "Aktif mengikuti perkuliahan dengan fokus pada desain dan pengembangan digital." },
+  ],
+  contact: {
+    email:     "email@example.com",
+    instagram: "https://instagram.com/username",
+    linkedin:  "https://linkedin.com/in/username",
+    github:    "https://github.com/username",
+  }
+};
+
+/* ---- State ---- */
+let data = {};
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener("DOMContentLoaded", () => {
+  // Enter untuk login
+  document.getElementById("admin-password").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") doLogin();
+  });
+});
+
+/* ============================================================
+   LOGIN
+============================================================ */
+function doLogin() {
+  const pwd = document.getElementById("admin-password").value;
+  if (pwd === ADMIN_PASS) {
+    document.getElementById("login-screen").style.display  = "none";
+    document.getElementById("admin-layout").style.display  = "flex";
+    initAdmin();
+  } else {
+    document.getElementById("login-error").style.display = "block";
+    document.getElementById("admin-password").value = "";
+    document.getElementById("admin-password").focus();
+  }
+}
+
+/* ============================================================
+   ADMIN INIT
+============================================================ */
+function initAdmin() {
+  // Load data dari localStorage atau default
+  const saved = localStorage.getItem(STORE_KEY);
+  data = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(DEFAULT_DATA));
+
+  // Isi semua field
+  populateIdentity();
+  populateAbout();
+  renderProjects();
+  renderSkills();
+  renderExperience();
+  populateContact();
+}
+
+/* ============================================================
+   TAB SWITCHING
+============================================================ */
+function switchTab(tabId, btn) {
+  document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll(".sidebar-link").forEach(b => b.classList.remove("active"));
+  document.getElementById(tabId).classList.add("active");
+  btn.classList.add("active");
+}
+
+/* ============================================================
+   POPULATE FUNCTIONS
+============================================================ */
+function populateIdentity() {
+  const d = data.identity;
+  document.getElementById("brand-name").value        = d.brandName    || "";
+  document.getElementById("hero-headline-1").value   = d.headline1    || "";
+  document.getElementById("hero-headline-2").value   = d.headline2    || "";
+  document.getElementById("hero-desc").value         = d.heroDesc     || "";
+  document.getElementById("hero-status").value       = d.heroStatus   || "";
+  document.getElementById("hero-location").value     = d.heroLocation || "";
+}
+
+function populateAbout() {
+  const d = data.about;
+  document.getElementById("about-name").value     = d.name     || "";
+  document.getElementById("about-title").value    = d.title    || "";
+  document.getElementById("about-greeting").value = d.greeting || "";
+  document.getElementById("about-p1").value       = d.p1       || "";
+  document.getElementById("about-p2").value       = d.p2       || "";
+  document.getElementById("about-tags").value     = d.tags     || "";
+  renderEduList();
+}
+
+function populateContact() {
+  const d = data.contact;
+  document.getElementById("contact-email").value     = d.email     || "";
+  document.getElementById("contact-instagram").value = d.instagram || "";
+  document.getElementById("contact-linkedin").value  = d.linkedin  || "";
+  document.getElementById("contact-github").value    = d.github    || "";
+}
+
+/* ============================================================
+   EDUCATION LIST (About)
+============================================================ */
+function renderEduList() {
+  const container = document.getElementById("edu-list");
+  container.innerHTML = "";
+  (data.about.education || []).forEach((edu, i) => {
+    container.innerHTML += `
+      <div class="timeline-admin-row" id="edu-row-${i}">
+        <div class="timeline-admin-header">
+          <strong style="font-size:0.85rem;">Pendidikan #${i+1}</strong>
+          <button class="icon-btn danger" onclick="removeEdu(${i})" title="Hapus">
+            <i class="ph ph-trash"></i>
+          </button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nama Sekolah / Universitas</label>
+            <input type="text" class="form-input" id="edu-school-${i}" value="${edu.school}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Jurusan</label>
+            <input type="text" class="form-input" id="edu-major-${i}" value="${edu.major}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tahun</label>
+          <input type="text" class="form-input" id="edu-year-${i}" value="${edu.year}" placeholder="2022 – Sekarang" />
+        </div>
+      </div>`;
+  });
+}
+
+function addEduItem() {
+  data.about.education.push({ school: "", major: "", year: "" });
+  renderEduList();
+}
+
+function removeEdu(i) {
+  data.about.education.splice(i, 1);
+  renderEduList();
+}
+
+/* ============================================================
+   PROJECTS
+============================================================ */
+function renderProjects() {
+  const container = document.getElementById("projects-admin-list");
+  container.innerHTML = "";
+  (data.projects || []).forEach((p, i) => {
+    container.innerHTML += `
+      <div class="project-admin-card" id="proj-card-${i}">
+        <div class="project-admin-card__header">
+          <span class="project-admin-card__title">Project #${i+1}: ${p.title || "(Tanpa Judul)"}</span>
+          <div class="project-admin-card__actions">
+            <button class="icon-btn danger" onclick="removeProject(${i})"><i class="ph ph-trash"></i></button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Nama Project</label>
+            <input type="text" class="form-input" id="proj-title-${i}" value="${p.title}"
+              oninput="updateProjectTitle(${i},this.value)" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Kategori</label>
+            <select class="form-input skill-level-select" id="proj-cat-${i}" style="cursor:pointer;">
+              ${["web","uiux","graphic","business","academic"].map(c =>
+                `<option value="${c}" ${p.category===c?"selected":""}>${{web:"Web Development",uiux:"UI/UX Design",graphic:"Graphic Design",business:"Business",academic:"Academic"}[c]}</option>`
+              ).join("")}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi Singkat</label>
+          <textarea class="form-textarea" id="proj-desc-${i}" rows="2">${p.desc}</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Teknologi (pisahkan koma)</label>
+          <input type="text" class="form-input" id="proj-tech-${i}" value="${p.tech}" />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">URL Live Demo (opsional)</label>
+            <input type="url" class="form-input" id="proj-demo-${i}" value="${p.demo}" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">URL GitHub (opsional)</label>
+            <input type="url" class="form-input" id="proj-github-${i}" value="${p.github}" placeholder="https://github.com/..." />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Path Gambar (dalam folder assets/images/)</label>
+          <input type="text" class="form-input" id="proj-thumb-${i}" value="${p.thumb}" placeholder="assets/images/project-1.jpg" />
+        </div>
+      </div>`;
+  });
+}
+
+function updateProjectTitle(i, val) {
+  const header = document.querySelector(`#proj-card-${i} .project-admin-card__title`);
+  if (header) header.textContent = `Project #${i+1}: ${val || "(Tanpa Judul)"}`;
+}
+
+function addProject() {
+  data.projects.push({ title: "", category: "web", desc: "", tech: "", demo: "", github: "", thumb: "" });
+  renderProjects();
+  // Scroll ke bawah
+  document.getElementById("projects-admin-list").lastElementChild?.scrollIntoView({ behavior: "smooth" });
+}
+
+function removeProject(i) {
+  if (!confirm(`Hapus Project #${i+1}?`)) return;
+  data.projects.splice(i, 1);
+  renderProjects();
+}
+
+/* ============================================================
+   SKILLS
+============================================================ */
+function renderSkills() {
+  const container = document.getElementById("skills-admin-list");
+  container.innerHTML = "";
+  (data.skills || []).forEach((group, gi) => {
+    container.innerHTML += `
+      <div class="card" id="skill-group-${gi}">
+        <div class="card__title" style="justify-content:space-between; align-items:center;">
+          <span style="display:flex;align-items:center;gap:8px;">
+            <i class="ph ph-wrench" style="color:var(--accent)"></i>
+            <input type="text" class="form-input" style="width:200px; padding:4px 10px; font-weight:600;"
+              id="skill-cat-${gi}" value="${group.category}" placeholder="Nama Kategori" />
+          </span>
+          <div style="display:flex;gap:6px;align-items:center;">
+            <select class="skill-level-select" id="skill-level-${gi}" title="Level">
+              <option value="" ${!group.level?"selected":""}>— Level —</option>
+              <option value="proficient" ${group.level==="proficient"?"selected":""}>Berpengalaman</option>
+              <option value="learning"   ${group.level==="learning"?"selected":""}>Sedang Belajar</option>
+            </select>
+            <button class="icon-btn danger" onclick="removeSkillGroup(${gi})"><i class="ph ph-trash"></i></button>
+          </div>
+        </div>
+        <div class="skill-admin-list" id="skill-items-${gi}">
+          ${(group.items || []).map((item, ii) => `
+            <div class="skill-admin-row" id="skill-item-${gi}-${ii}">
+              <input type="text" class="form-input skill-name" id="skill-name-${gi}-${ii}"
+                value="${item}" placeholder="Nama skill..." />
+              <button class="skill-delete-btn" onclick="removeSkillItem(${gi},${ii})">
+                <i class="ph ph-x"></i>
+              </button>
+            </div>`).join("")}
+        </div>
+        <button class="add-item-btn" onclick="addSkillItem(${gi})" style="margin-top:8px;">
+          <i class="ph ph-plus"></i> Tambah Skill
+        </button>
+      </div>`;
+  });
+}
+
+function addSkillGroup() {
+  data.skills.push({ category: "Kategori Baru", level: "", items: [] });
+  renderSkills();
+}
+
+function removeSkillGroup(gi) {
+  if (!confirm("Hapus kategori skill ini?")) return;
+  data.skills.splice(gi, 1);
+  renderSkills();
+}
+
+function addSkillItem(gi) {
+  data.skills[gi].items.push("");
+  renderSkills();
+  // Fokus ke input terakhir
+  setTimeout(() => {
+    const inputs = document.querySelectorAll(`#skill-items-${gi} .form-input`);
+    if (inputs.length) inputs[inputs.length-1].focus();
+  }, 50);
+}
+
+function removeSkillItem(gi, ii) {
+  data.skills[gi].items.splice(ii, 1);
+  renderSkills();
+}
+
+/* ============================================================
+   EXPERIENCE
+============================================================ */
+function renderExperience() {
+  const container = document.getElementById("experience-admin-list");
+  container.innerHTML = "";
+  (data.experience || []).forEach((exp, i) => {
+    container.innerHTML += `
+      <div class="timeline-admin-row" id="exp-row-${i}">
+        <div class="timeline-admin-header">
+          <strong style="font-size:0.85rem;">#${i+1}: ${exp.title || "(Tanpa Judul)"}</strong>
+          <button class="icon-btn danger" onclick="removeExperience(${i})"><i class="ph ph-trash"></i></button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipe</label>
+            <select class="form-input skill-level-select" id="exp-type-${i}" style="cursor:pointer;">
+              <option value="org"   ${exp.type==="org"?"selected":""}>Organisasi</option>
+              <option value="event" ${exp.type==="event"?"selected":""}>Kepanitiaan</option>
+              <option value="work"  ${exp.type==="work"?"selected":""}>Freelance / Kerja</option>
+              <option value="edu"   ${exp.type==="edu"?"selected":""}>Pendidikan</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tahun</label>
+            <input type="text" class="form-input" id="exp-year-${i}" value="${exp.year}" placeholder="2023 – Sekarang" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Judul / Posisi</label>
+            <input type="text" class="form-input" id="exp-title-${i}" value="${exp.title}" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Tempat / Institusi</label>
+            <input type="text" class="form-input" id="exp-place-${i}" value="${exp.place}" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deskripsi</label>
+          <textarea class="form-textarea" id="exp-desc-${i}" rows="2">${exp.desc}</textarea>
+        </div>
+      </div>`;
+  });
+}
+
+function addExperience() {
+  data.experience.push({ type: "org", year: "", title: "", place: "", desc: "" });
+  renderExperience();
+}
+
+function removeExperience(i) {
+  if (!confirm("Hapus entri ini?")) return;
+  data.experience.splice(i, 1);
+  renderExperience();
+}
+
+/* ============================================================
+   SAVE FUNCTIONS
+============================================================ */
+function saveSection(section) {
+  collectAll();
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+
+  // Generate HTML snippet untuk disalin ke index.html
+  generateIndexHTML();
+
+  showToast("✓ Data disimpan! Website akan diperbarui.", "success");
+}
+
+function collectAll() {
+  // Identity
+  data.identity = {
+    brandName:      document.getElementById("brand-name")?.value        || data.identity.brandName,
+    headline1:      document.getElementById("hero-headline-1")?.value   || data.identity.headline1,
+    headline2:      document.getElementById("hero-headline-2")?.value   || data.identity.headline2,
+    heroDesc:       document.getElementById("hero-desc")?.value         || data.identity.heroDesc,
+    heroStatus:     document.getElementById("hero-status")?.value       || data.identity.heroStatus,
+    heroLocation:   document.getElementById("hero-location")?.value     || data.identity.heroLocation,
+  };
+
+  // About
+  data.about.name     = document.getElementById("about-name")?.value     || data.about.name;
+  data.about.title    = document.getElementById("about-title")?.value    || data.about.title;
+  data.about.greeting = document.getElementById("about-greeting")?.value || data.about.greeting;
+  data.about.p1       = document.getElementById("about-p1")?.value       || data.about.p1;
+  data.about.p2       = document.getElementById("about-p2")?.value       || data.about.p2;
+  data.about.tags     = document.getElementById("about-tags")?.value     || data.about.tags;
+
+  // Education rows
+  data.about.education.forEach((edu, i) => {
+    edu.school = document.getElementById(`edu-school-${i}`)?.value || edu.school;
+    edu.major  = document.getElementById(`edu-major-${i}`)?.value  || edu.major;
+    edu.year   = document.getElementById(`edu-year-${i}`)?.value   || edu.year;
+  });
+
+  // Projects
+  data.projects.forEach((p, i) => {
+    p.title    = document.getElementById(`proj-title-${i}`)?.value  || p.title;
+    p.category = document.getElementById(`proj-cat-${i}`)?.value    || p.category;
+    p.desc     = document.getElementById(`proj-desc-${i}`)?.value   || p.desc;
+    p.tech     = document.getElementById(`proj-tech-${i}`)?.value   || p.tech;
+    p.demo     = document.getElementById(`proj-demo-${i}`)?.value   || "";
+    p.github   = document.getElementById(`proj-github-${i}`)?.value || "";
+    p.thumb    = document.getElementById(`proj-thumb-${i}`)?.value  || p.thumb;
+  });
+
+  // Skills
+  data.skills.forEach((group, gi) => {
+    group.category = document.getElementById(`skill-cat-${gi}`)?.value   || group.category;
+    group.level    = document.getElementById(`skill-level-${gi}`)?.value || "";
+    group.items.forEach((_, ii) => {
+      group.items[ii] = document.getElementById(`skill-name-${gi}-${ii}`)?.value || group.items[ii];
+    });
+  });
+
+  // Experience
+  data.experience.forEach((exp, i) => {
+    exp.type  = document.getElementById(`exp-type-${i}`)?.value  || exp.type;
+    exp.year  = document.getElementById(`exp-year-${i}`)?.value  || exp.year;
+    exp.title = document.getElementById(`exp-title-${i}`)?.value || exp.title;
+    exp.place = document.getElementById(`exp-place-${i}`)?.value || exp.place;
+    exp.desc  = document.getElementById(`exp-desc-${i}`)?.value  || exp.desc;
+  });
+
+  // Contact
+  data.contact = {
+    email:     document.getElementById("contact-email")?.value     || data.contact.email,
+    instagram: document.getElementById("contact-instagram")?.value || data.contact.instagram,
+    linkedin:  document.getElementById("contact-linkedin")?.value  || data.contact.linkedin,
+    github:    document.getElementById("contact-github")?.value    || data.contact.github,
+  };
+}
+
+/* ============================================================
+   GENERATE HTML — Inject data ke index.html via localStorage
+   index.html akan membaca data ini saat di-load
+============================================================ */
+function generateIndexHTML() {
+  // Simpan ke localStorage — index.html akan membaca ini
+  localStorage.setItem(STORE_KEY, JSON.stringify(data));
+  localStorage.setItem("nexa_updated_at", new Date().toISOString());
+}
+
+/* ============================================================
+   PHOTO PREVIEW
+============================================================ */
+function previewPhoto(input, previewId, destPath) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const container = document.getElementById(previewId);
+    container.innerHTML = `
+      <div class="photo-preview-item">
+        <img src="${e.target.result}" alt="Preview" />
+        <div class="photo-label">${file.name}</div>
+      </div>`;
+  };
+  reader.readAsDataURL(file);
+  showToast(`Foto dipilih: ${file.name}. Simpan ke folder yang sesuai.`, "success");
+}
+
+function previewMultiplePhotos(input, previewId) {
+  const container = document.getElementById(previewId);
+  container.innerHTML = "";
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      container.innerHTML += `
+        <div class="photo-preview-item">
+          <img src="${e.target.result}" alt="${file.name}" />
+          <div class="photo-label">${file.name}</div>
+        </div>`;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleDragOver(e, areaId) {
+  e.preventDefault();
+  document.getElementById(areaId)?.classList.add("drag-over");
+}
+
+function handleDragLeave(areaId) {
+  document.getElementById(areaId)?.classList.remove("drag-over");
+}
+
+function handleDrop(e, inputId, previewId) {
+  e.preventDefault();
+  const areaId = e.currentTarget.id;
+  if (areaId) handleDragLeave(areaId);
+
+  const files = e.dataTransfer.files;
+  if (!files.length) return;
+
+  const input = document.getElementById(inputId);
+  if (input) {
+    const dt = new DataTransfer();
+    Array.from(files).forEach(f => dt.items.add(f));
+    input.files = dt.files;
+    if (inputId === "profile-photo-input") {
+      previewPhoto(input, previewId, "assets/images/profile");
+    } else {
+      previewMultiplePhotos(input, previewId);
+    }
+  }
+}
+
+/* ============================================================
+   TOAST
+============================================================ */
+function showToast(msg, type = "success") {
+  const toast   = document.getElementById("toast");
+  const toastMsg = document.getElementById("toast-msg");
+  toastMsg.textContent = msg;
+  toast.className = `toast ${type}`;
+  void toast.offsetWidth; // reflow
+  toast.classList.add("show");
+  setTimeout(() => toast.classList.remove("show"), 3200);
+}
+</script>
+
+<!-- ============================================================
+     SCRIPT: Baca data admin dan terapkan ke index.html
+     (Tambahkan script ini ke index.html agar data admin terbaca)
+============================================================ -->
+<!--
+  CATATAN PENTING:
+  Tambahkan script berikut ke index.html SEBELUM </body> agar
+  perubahan dari admin panel langsung terlihat di website:
+
+  <script>
+    // Baca data dari admin panel
+    (function() {
+      const raw = localStorage.getItem('nexa_admin_data');
+      if (!raw) return;
+      try {
+        const d = JSON.parse(raw);
+        applyAdminData(d);
+      } catch(e) {}
+    })();
+  </script>
+
+  Atau cukup buka index.html — script.js sudah membaca data ini otomatis
+  setelah Anda menyimpan dari admin panel.
+-->
+</body>
+</html>
